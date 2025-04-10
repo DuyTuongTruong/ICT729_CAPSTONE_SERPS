@@ -30,6 +30,10 @@ const options = {
         UserSchema: UserSchema,
         CourseSchema: courseSchema,
         UnitSchema: unitSchema,
+        ClassSchema: classSchema,
+        AssignmentSchema: assignmentSchema,
+        assignmentGradeSchema,
+        assignmentSubmissionSchema,
       },
       responses: {
         SigninSuccess: signinResponse[200],
