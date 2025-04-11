@@ -9,7 +9,7 @@ const { protect, authorization } = require("../middlewares/auth");
  * @swagger
  * /course/getAllCourse:
  *  get:
- *    summary : get all course
+ *    summary : get all course  [ADMIN]
  *    description : get all course
  *    tags : [course]
  *    security :
@@ -28,7 +28,7 @@ const { protect, authorization } = require("../middlewares/auth");
  * @swagger
  * /course/createCourse:
  *   post:
- *     summary : create a course
+ *     summary : create a course [ADMIN]
  *     description : create a course
  *     tags : [course]
  *     security :
@@ -53,7 +53,7 @@ const { protect, authorization } = require("../middlewares/auth");
  * @swagger
  * /course/{courseID}:
  *   put:
- *      summary : create many courses
+ *      summary : create many courses  [ADMIN]
  *      description : create many courses
  *      tags : [course]
  *      security :
@@ -84,7 +84,7 @@ const { protect, authorization } = require("../middlewares/auth");
  * @swagger
  * /course/{courseID}:
  *   delete:
- *      summary : delete a course
+ *      summary : delete a course  [ADMIN]
  *      description : delete a course
  *      tags : [course]
  *      security :
@@ -106,7 +106,7 @@ const { protect, authorization } = require("../middlewares/auth");
  */
 router
   .route("/course/getAllCourse")
-  .get(protect, authorization(Roles.STUDENT), courseController.getAllCourse);
+  .get(protect, authorization(Roles.ADMIN), courseController.getAllCourse);
 router
   .route("/course/createCourse")
   .post(protect, authorization(Roles.ADMIN), courseController.createCourse);

@@ -7,7 +7,7 @@ const router = require("express-promise-router")();
  * @swagger
  * /unit/getAllUnits:
  *   get:
- *     summary: Retrieve all units
+ *     summary: Retrieve all units  [ADMIN]
  *     description: Get a list of all academic units.
  *     security:
  *       - bearerAuth: []
@@ -19,7 +19,7 @@ const router = require("express-promise-router")();
  *
  * /unit/create:
  *   post:
- *     summary: Create a new unit
+ *     summary: Create a new unit  [ADMIN]
  *     description: Add a new academic unit to the system.
  *     security:
  *       - bearerAuth: []
@@ -40,7 +40,7 @@ const router = require("express-promise-router")();
  * @swagger
  * /unit/search:
  *   get:
- *     summary: Search Unit
+ *     summary: Search Unit  [ADMIN]
  *     tags: [Units]
  *     security:
  *       - bearerAuth: []
@@ -63,7 +63,7 @@ const router = require("express-promise-router")();
  * @swagger
  * /unit/filter:
  *   get:
- *     summary: Filter Unit by Course
+ *     summary: Filter Unit by Course  [ADMIN]
  *     tags: [Units]
  *     security:
  *       - bearerAuth: []
@@ -86,7 +86,7 @@ const router = require("express-promise-router")();
  * @swagger
  * /unit/createManyUnit:
  *   post:
- *     summary: Create multiple Units at once
+ *     summary: Create multiple Units at once  [ADMIN]
  *     tags: [Units]
  *     security:
  *       - bearerAuth: []
@@ -127,7 +127,7 @@ const router = require("express-promise-router")();
  * @swagger
  * /unit/update/{unitID}:
  *   put:
- *     summary: Update Unit
+ *     summary: Update Unit  [ADMIN]
  *     tags: [Units]
  *     security:
  *       - bearerAuth: []
@@ -184,7 +184,7 @@ const router = require("express-promise-router")();
  * @swagger
  * /unit/delete/{unitID}:
  *   delete:
- *     summary: remove Unit
+ *     summary: remove Unit [ADMIN]
  *     tags: [Units]
  *     security:
  *       - bearerAuth: []
@@ -217,30 +217,30 @@ const router = require("express-promise-router")();
 
 router
   .route("/unit/getAllUnits")
-  .get(protect, authorization(Roles.STUDENT), UnitController.getAllUnit);
+  .get(protect, authorization(Roles.ADMIN), UnitController.getAllUnit);
 
 router
   .route("/unit/create")
-  .post(protect, authorization(Roles.TEACHER), UnitController.createUnit);
+  .post(protect, authorization(Roles.ADMIN), UnitController.createUnit);
 
 router
   .route("/unit/search")
-  .get(protect, authorization(Roles.STUDENT), UnitController.searchUnit);
+  .get(protect, authorization(Roles.ADMIN), UnitController.searchUnit);
 
 router
   .route("/unit/filter")
-  .get(protect, authorization(Roles.STUDENT), UnitController.filterByCourse);
+  .get(protect, authorization(Roles.ADMIN), UnitController.filterByCourse);
 
 router
   .route("/unit/createManyUnit")
-  .post(protect, authorization(Roles.TEACHER), UnitController.createManyUnit);
+  .post(protect, authorization(Roles.ADMIN), UnitController.createManyUnit);
 
 router
   .route("/unit/update/:unitID")
-  .put(protect, authorization(Roles.TEACHER), UnitController.updateUnit);
+  .put(protect, authorization(Roles.ADMIN), UnitController.updateUnit);
 
 router
   .route("/unit/delete/:unitID")
-  .delete(protect, authorization(Roles.TEACHER), UnitController.removeUnit);
+  .delete(protect, authorization(Roles.ADMIN), UnitController.removeUnit);
 
 module.exports = router;
