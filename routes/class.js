@@ -14,7 +14,7 @@ const router = require("express-promise-router")();
  * @swagger
  * /class/getAllClass:
  *   get:
- *     summary: Get a list of all classes
+ *     summary: Get a list of all classes  [ADMIN]
  *     tags: [Classes]
  *     security:
  *       - bearerAuth: []
@@ -46,7 +46,7 @@ const router = require("express-promise-router")();
  * @swagger
  * /class/create:
  *   post:
- *     summary: Create a new class
+ *     summary: Create a new class  [ADMIN]
  *     tags: [Classes]
  *     security:
  *       - bearerAuth: []
@@ -112,7 +112,7 @@ const router = require("express-promise-router")();
  * @swagger
  * /class/update/{classID}:
  *   put:
- *     summary: Update class information
+ *     summary: Update class information  [ADMIN]
  *     tags: [Classes]
  *     security:
  *       - bearerAuth: []
@@ -183,7 +183,7 @@ const router = require("express-promise-router")();
  * @swagger
  * /class/delete/{classID}:
  *   delete:
- *     summary: Delete a class
+ *     summary: Delete a class [ADMIN]
  *     tags: [Classes]
  *     security:
  *       - bearerAuth: []
@@ -217,18 +217,18 @@ const router = require("express-promise-router")();
 
 router
   .route("/class/getAllClass")
-  .get(protect, authorization(Roles.STUDENT), ClassController.getAllClass);
+  .get(protect, authorization(Roles.ADMIN), ClassController.getAllClass);
 
 router
   .route("/class/create")
-  .post(protect, authorization(Roles.TEACHER), ClassController.createClass);
+  .post(protect, authorization(Roles.ADMIN), ClassController.createClass);
 
 router
   .route("/class/update/:classID")
-  .put(protect, authorization(Roles.TEACHER), ClassController.updateClass);
+  .put(protect, authorization(Roles.ADMIN), ClassController.updateClass);
 
 router
   .route("/class/delete/:classID")
-  .delete(protect, authorization(Roles.TEACHER), ClassController.deleteClass);
+  .delete(protect, authorization(Roles.ADMIN), ClassController.deleteClass);
 
 module.exports = router;

@@ -20,7 +20,7 @@ const { protect, authorization } = require("../middlewares/auth");
  * @swagger
  * /signin:
  *   post:
- *     summary: Login and receive JWT tokens
+ *     summary: Login and receive JWT tokens [STUDENT] [TEACHER] [ADMIN] [SUPERADMIN]
  *     description: Check the account and password, if valid, the JWT token will be returned.
  *     tags: [Login]
  *     requestBody:
@@ -60,7 +60,7 @@ const { protect, authorization } = require("../middlewares/auth");
  * @swagger
  * /users/{userID}:
  *   get:
- *     summary: Get a user by ID
+ *     summary: Get a user by ID [STUDENT] [TEACHER] [ADMIN]
  *     description: Get a user by ID
  *     tags: [Users]
  *     security:
@@ -85,7 +85,7 @@ const { protect, authorization } = require("../middlewares/auth");
  * @swagger
  * /users/createUser:
  *   post:
- *     summary: Create a new user
+ *     summary: Create a new user [TEACHER] [ADMIN]
  *     description: Create a new user
  *     tags: [Users]
  *     security:
@@ -109,7 +109,7 @@ const { protect, authorization } = require("../middlewares/auth");
  * @swagger
  * /users/findAllTeachers:
  *  get:
- *   summary: Get all teachers
+ *   summary: Get all teachers [ADMIN]
  *   description: Get all teachers
  *   tags: [Users]
  *   security:
@@ -127,7 +127,7 @@ const { protect, authorization } = require("../middlewares/auth");
  * @swagger
  * /users/{userID}:
  *   put:
- *     summary: Update a user by ID
+ *     summary: Update a user by ID [STUDENT] [TEACHER] [ADMIN]
  *     description: Update a user by ID
  *     tags: [Users]
  *     security:
@@ -153,6 +153,7 @@ const { protect, authorization } = require("../middlewares/auth");
  *       401:
  *         description: Unauthorized
  */
+
 router
   .route("/signin")
   .post(
@@ -187,5 +188,7 @@ router
 router
   .route("/users/secret")
   .get(passport.authenticate("jwt", { session: false }), UserController.secret);
+
+
 
 module.exports = router;
