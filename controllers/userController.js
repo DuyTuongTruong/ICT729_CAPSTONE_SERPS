@@ -25,7 +25,9 @@ const signIn = async (req, res, next) => {
 
   res.setHeader("Authorization", token);
 
-  return res.status(200).json({ success: true, token: token });
+  return res
+    .status(200)
+    .json({ success: true, token: token, role: req.user.role });
 };
 
 const createUser = async (req, res, next) => {
