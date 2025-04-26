@@ -236,7 +236,59 @@ const getStudentAttendance = async (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
+const addStudentsToClass = async (req, res) => {
+  try {
+    const { classId } = req.params;
+    const { studentIds } = req.body;
 
+    if (!studentIds || !Array.isArray(studentIds) || studentIds.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "studentIds must be a non-empty array" });
+    }
+
+    const foundClass = await Class.findById(classId);
+
+    if (!foundClass) {
+      return res.status(404).json({ message: "Class not found" });
+    }
+
+    const newStudents = studentIds.filter(
+      (id) => !foundClass.students.map((s) => s.toString()).includes(id)
+    );
+
+    foundClass.students.push(...newStudents);
+    foundClass.quantity = foundClass.students.length;
+
+    await foundClass.save();
+
+    res.status(200).json({
+      message: `${newStudents.length} students added successfully`,
+      updatedClass: foundClass,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+const getClassById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const foundClass = await Class.findById(id)
+      .populate("students", "fullName email")
+      .populate("lecture", "fullName email")
+      .populate("unitId");
+
+    if (!foundClass)
+      return res
+        .status(404)
+        .json({ success: false, message: "Class not found" });
+
+    res.status(200).json({ success: true, data: foundClass });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error", error });
+  }
+};
 module.exports = {
   createClass,
   markAttendance,
@@ -245,4 +297,6 @@ module.exports = {
   filterClass,
   getAllClass,
   getStudentAttendance,
+  addStudentsToClass,
+  getClassById,
 };
