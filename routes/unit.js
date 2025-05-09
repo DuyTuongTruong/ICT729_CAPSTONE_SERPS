@@ -215,6 +215,30 @@ const router = require("express-promise-router")();
  *         $ref: "#/components/responses/Unauthorized"
  */
 
+/**
+ * @swagger
+ * /units/{id}:
+ *   get:
+ *     summary: Get unit by ID
+ *     tags: [Units]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Unit ID
+ *     responses:
+ *       200:
+ *         description: Unit found
+ *       404:
+ *         description: Unit not found
+ *       500:
+ *         description: Server error
+ */
+
 router
   .route("/unit/getAllUnits")
   .get(protect, authorization(Roles.ADMIN), UnitController.getAllUnit);
@@ -242,5 +266,9 @@ router
 router
   .route("/unit/delete/:unitID")
   .delete(protect, authorization(Roles.ADMIN), UnitController.removeUnit);
+
+router
+  .route("/units/:id")
+  .get(protect, authorization(Roles.STUDENT), UnitController.getUnitById);
 
 module.exports = router;

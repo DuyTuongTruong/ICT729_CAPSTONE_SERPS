@@ -395,6 +395,7 @@ const router = require("express-promise-router")();
  *       401:
  *         $ref: "#/components/responses/Unauthorized"
  */
+
 /**
  * @swagger
  * /class/{studentId}/attendance:
@@ -484,6 +485,7 @@ const router = require("express-promise-router")();
  *                   type: string
  *                   example: "Internal server error."
  */
+
 /**
  * @swagger
  * /classes/{classId}/students:
@@ -521,6 +523,7 @@ const router = require("express-promise-router")();
  *       500:
  *         description: Server error
  */
+
 /**
  * @swagger
  * /classes/{id}:
@@ -550,22 +553,6 @@ router
   .get(protect, authorization(Roles.ADMIN), ClassController.getAllClass);
 
 router
-  .route("/class/create")
-  .post(protect, authorization(Roles.ADMIN), ClassController.createClass);
-
-router
-  .route("/class/update/:classID")
-  .put(protect, authorization(Roles.ADMIN), ClassController.updateClass);
-
-router
-  .route("/class/delete/:classID")
-  .delete(protect, authorization(Roles.ADMIN), ClassController.deleteClass);
-
-router
-  .route("/class/:classId/attendance")
-  .post(protect, authorization(Roles.TEACHER), ClassController.markAttendance);
-
-router
   .route("/class/filter")
   .get(protect, authorization(Roles.STUDENT), ClassController.filterClass);
 
@@ -578,12 +565,20 @@ router
   );
 
 router
+  .route("/class/create")
+  .post(protect, authorization(Roles.ADMIN), ClassController.createClass);
+
+router
   .route("/class/:classId/attendance")
   .post(protect, authorization(Roles.TEACHER), ClassController.markAttendance);
 
 router
-  .route("/classes/:id")
-  .get(protect, authorization(Roles.STUDENT), ClassController.getClassById);
+  .route("/class/update/:classID")
+  .put(protect, authorization(Roles.ADMIN), ClassController.updateClass);
+
+router
+  .route("/class/delete/:classID")
+  .delete(protect, authorization(Roles.ADMIN), ClassController.deleteClass);
 
 router
   .route("/classes/:classId/students")
@@ -593,4 +588,7 @@ router
     ClassController.addStudentsToClass
   );
 
+router
+  .route("/classes/:id")
+  .get(protect, authorization(Roles.STUDENT), ClassController.getClassById);
 module.exports = router;

@@ -93,11 +93,26 @@ const createManyCourses = async (req, res) => {
     return res.status(400).json({ success: false, message: e.message });
   }
 };
+const getCourseById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const course = await Course.findById(id);
 
+    if (!course)
+      return res
+        .status(404)
+        .json({ success: false, message: "Course not found" });
+
+    res.status(200).json({ success: true, data: course });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error", error });
+  }
+};
 module.exports = {
   getAllCourse,
   createCourse,
   createManyCourses,
   updateCourse,
   deleteCourse,
+  getCourseById,
 };

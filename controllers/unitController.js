@@ -103,7 +103,21 @@ const getAllUnit = async (req, res, next) => {
     res.status(400).json({ success: false, message: error.message });
   }
 };
+const getUnitById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const unit = await Unit.findById(id);
 
+    if (!unit)
+      return res
+        .status(404)
+        .json({ success: false, message: "Unit not found" });
+
+    res.status(200).json({ success: true, data: unit });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error", error });
+  }
+};
 module.exports = {
   createUnit,
   createManyUnit,
@@ -112,4 +126,5 @@ module.exports = {
   filterByCourse,
   removeUnit,
   getAllUnit,
+  getUnitById,
 };

@@ -65,6 +65,15 @@ UserSchema.pre("save", async function (next) {
     next(error);
   }
 });
+UserSchema.pre("findOneAndUpdate", async function () {
+  let update = { ...this.getUpdate() };
+
+  if (update.password) {
+    const salt = await bcrypt.genSalt(10);
+    update.password = await bcrypt.hash(this.getUpdate().password, salt);
+    this.setUpdate(update);
+  }
+});
 
 UserSchema.methods.isValidPassword = async function (newPassword) {
   try {

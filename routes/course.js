@@ -104,6 +104,30 @@ const { protect, authorization } = require("../middlewares/auth");
  *         401:
  *            description: Unauthorized
  */
+
+/**
+ * @swagger
+ * /courses/{id}:
+ *   get:
+ *     summary: Get course by ID [STUDENT][TEACHER][ADMIN]
+ *     tags: [course]
+ *     security :
+ *       - bearerAuth : []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Course ID
+ *     responses:
+ *       200:
+ *         description: Course found
+ *       404:
+ *         description: Course not found
+ *       500:
+ *         description: Server error
+ */
 router
   .route("/course/getAllCourse")
   .get(protect, authorization(Roles.ADMIN), courseController.getAllCourse);
@@ -116,5 +140,8 @@ router
 router
   .route("/course/:courseID")
   .delete(protect, authorization(Roles.ADMIN), courseController.deleteCourse);
+router
+  .route("/courses/:id")
+  .get(protect, authorization(Roles.STUDENT), courseController.getCourseById);
 
 module.exports = router;

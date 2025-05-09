@@ -20,7 +20,7 @@ const { protect, authorization } = require("../middlewares/auth");
  * @swagger
  * /signin:
  *   post:
- *     summary: Login and receive JWT tokens [STUDENT] [TEACHER] [ADMIN] [SUPERADMIN]
+ *     summary: Login and receive JWT tokens [STUDENT] [TEACHER] [ADMIN]
  *     description: Check the account and password, if valid, the JWT token will be returned.
  *     tags: [Login]
  *     requestBody:
@@ -107,7 +107,7 @@ const { protect, authorization } = require("../middlewares/auth");
 
 /**
  * @swagger
- * /users/findAllTeachers:
+ * /users/getAllTeacher:
  *  get:
  *   summary: Get all teachers [ADMIN]
  *   description: Get all teachers
@@ -153,6 +153,161 @@ const { protect, authorization } = require("../middlewares/auth");
  *       401:
  *         description: Unauthorized
  */
+/**
+ * @swagger
+ * /users/register-multiple:
+ *   post:
+ *     summary: Register multiple users  [ADMIN]
+ *     description: Create multiple new users with auto-generated user_id (ST001, TC001,...).
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
+ *             items:
+ *               type: object
+ *               required:
+ *                 - fullName
+ *                 - gender
+ *                 - email
+ *                 - phone
+ *                 - role
+ *                 - status
+ *                 - dateOfBirth
+ *                 - username
+ *                 - password
+ *                 - address
+ *               properties:
+ *                 fullName:
+ *                   type: string
+ *                 gender:
+ *                   type: string
+ *                   enum: [male, female]
+ *                 email:
+ *                   type: string
+ *                 phone:
+ *                   type: string
+ *                 role:
+ *                   type: string
+ *                   enum: [student, teacher]
+ *                 status:
+ *                   type: string
+ *                   enum: [active, inactive]
+ *                 dateOfBirth:
+ *                   type: string
+ *                   format: date
+ *                 username:
+ *                   type: string
+ *                 password:
+ *                   type: string
+ *                 address:
+ *                   type: string
+ *     responses:
+ *       201:
+ *         description: Users registered successfully
+ *       400:
+ *         description: Username or email already exists
+ *       401:
+ *         description: Unauthorized
+ */
+
+/**
+ * @swagger
+ * /users/classes/{studentId}:
+ *   get:
+ *     summary: Get all classes of a student [STUDENT]
+ *     description: Retrieve all classes that a student has participated in. Supports filtering by semester or year.
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: studentId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the student
+ *       - in: query
+ *         name: year
+ *         schema:
+ *           type: string
+ *         description: Filter by academic year (e.g., 2023)
+ *       - in: query
+ *         name: semester
+ *         schema:
+ *           type: string
+ *         description: Filter by semester (e.g., 1 or 2)
+ *     responses:
+ *       200:
+ *         description: List of classes retrieved successfully
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
+/**
+ * @swagger
+ * /users/courses/{studentId}:
+ *   get:
+ *     summary: Get all courses of a student [STUDENT]
+ *     description: Retrieve all courses that a student is participating in, based on enrolled classes.
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: studentId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the student
+ *     responses:
+ *       200:
+ *         description: List of courses retrieved successfully
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /users/units/{studentId}:
+ *   get:
+ *     summary: Get all units of a student [STUDENT]
+ *     description: Retrieve all units of a student based on enrolled classes, with optional filtering by semester and year.
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: studentId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the student
+ *       - in: query
+ *         name: year
+ *         schema:
+ *           type: string
+ *         description: Filter by academic year
+ *       - in: query
+ *         name: semester
+ *         schema:
+ *           type: string
+ *         description: Filter by semester (e.g., 1 or 2)
+ *     responses:
+ *       200:
+ *         description: List of units retrieved successfully
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
 
 router
   .route("/signin")
@@ -163,6 +318,14 @@ router
   );
 router.route("/users").get(protect, UserController.index);
 router
+  .route("/users/createUser")
+  .post(protect, authorization(Roles.ADMIN), UserController.createUser);
+
+router
+  .route("/users/getAllTeacher")
+  .get(protect, authorization(Roles.ADMIN), UserController.findAllTeachers);
+
+router
   .route("/users/:userID")
   .get(
     protect,
@@ -170,12 +333,7 @@ router
     validateParam(schemas.idSchema, "userID"),
     UserController.findOneUser
   );
-router
-  .route("/users/createUser")
-  .post(protect, authorization(Roles.ADMIN), UserController.createUser);
-router
-  .route("/users/findAllTeachers")
-  .get(protect, UserController.findAllTeachers);
+
 router
   .route("/users/:userID")
   .put(
@@ -189,6 +347,31 @@ router
   .route("/users/secret")
   .get(passport.authenticate("jwt", { session: false }), UserController.secret);
 
+router
+  .route("/users/register-multiple")
+  .post(
+    protect,
+    authorization(Roles.TEACHER),
+    UserController.registerMultipleUsers
+  );
 
+router.get(
+  "/users/classes/:studentId",
+  protect,
+  authorization(Roles.STUDENT),
+  UserController.getClassesByStudent
+);
+router.get(
+  "/users/courses/:studentId",
+  protect,
+  authorization(Roles.STUDENT),
+  UserController.getCoursesByStudent
+);
+router.get(
+  "/users/units/:studentId",
+  protect,
+  authorization(Roles.STUDENT),
+  UserController.getUnitsByStudent
+);
 
 module.exports = router;
