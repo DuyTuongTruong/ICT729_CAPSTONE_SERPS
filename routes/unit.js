@@ -241,7 +241,7 @@ const router = require("express-promise-router")();
 
 router
   .route("/unit/getAllUnits")
-  .get(protect, authorization(Roles.ADMIN), UnitController.getAllUnit);
+  .get(protect, authorization(Roles.TEACHER), UnitController.getAllUnit);
 
 router
   .route("/unit/create")

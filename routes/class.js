@@ -550,7 +550,7 @@ const router = require("express-promise-router")();
 
 router
   .route("/class/getAllClass")
-  .get(protect, authorization(Roles.ADMIN), ClassController.getAllClass);
+  .get(protect, authorization(Roles.TEACHER), ClassController.getAllClass);
 
 router
   .route("/class/filter")
