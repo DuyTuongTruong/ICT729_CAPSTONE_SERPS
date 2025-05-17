@@ -32,7 +32,7 @@ const allowedOrigins = process.env.BASE_URL || "http://localhost:3000/api/v1";
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: true,
     methods: "GET,POST,PUT,DELETE",
     credentials: true,
   })
